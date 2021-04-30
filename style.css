@@ -56,7 +56,14 @@ img {
   transform: translate(-50%, -50%);
   height: 56px;
   width: 56px;
+  -webkit-animation: spinner 2s linear infinite;
   animation: spinner 2s linear infinite;
+}
+
+@-webkit-keyframes spinner {
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 @keyframes spinner {
