@@ -2,6 +2,8 @@
 
 const btn = document.querySelector(".btn--check--weather");
 const parentEl = document.querySelector(".weather--container");
+const btnContainer = document.querySelector(".btn--container");
+const spinnerContainer = document.querySelector(".spinner--container");
 
 const renderWeather = function (city, temperature, description) {
   const markup = `
@@ -22,6 +24,16 @@ const renderError = function () {
   btn.classList.add("hidden");
 };
 
+const renderSpinner = function () {
+  const markup = `
+    
+      <img  src="/img/spinner.png" alt="spinner" />
+    
+  `;
+  btnContainer.innerHTML = "";
+  spinnerContainer.insertAdjacentHTML("afterbegin", markup);
+};
+
 const getPosition = function () {
   return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -30,6 +42,7 @@ const getPosition = function () {
 
 const weather = async function () {
   try {
+    renderSpinner();
     const pos = await getPosition();
     const { latitude: lat, longitude: lng } = pos.coords;
 
@@ -42,14 +55,16 @@ const weather = async function () {
     const resWeather = await fetch(
       `https://goweather.herokuapp.com/weather/${dataGeo.city}`
     );
+
     if (!resWeather.ok) throw new Error("Problem getting weather!");
 
     const dataWeather = await resWeather.json();
     const { temperature } = dataWeather;
     const { description } = dataWeather;
-
+    spinnerContainer.classList.add("hidden");
     renderWeather(city, temperature, description.toLowerCase());
   } catch (err) {
+    spinnerContainer.classList.add("hidden");
     renderError();
   }
 };
